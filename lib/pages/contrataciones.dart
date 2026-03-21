@@ -47,7 +47,8 @@ class _PaginaContratacionesState extends State<PaginaContrataciones> {
         title: const Text("Requisitos de Contratación"),
         backgroundColor: const Color(
           0xFF7B2CBF,
-        ), // Morado para mantener la línea
+        ), 
+        // Morado para mantener la línea
         foregroundColor: Colors.white,
       ),
       body: Stack(

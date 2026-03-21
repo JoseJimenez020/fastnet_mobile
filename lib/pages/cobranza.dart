@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'cobranza.dart';
 
-class PantallaPrincipal extends StatelessWidget {
-  const PantallaPrincipal({super.key});
+class PantallaCobranza extends StatelessWidget {
+  const PantallaCobranza({super.key});
+
+  // Función para lanzar las URLs (Llamada y WhatsApp)
+  Future<void> _launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      throw Exception('No se pudo abrir $url');
+    }
+  }
 
   void _showSupportDialog(BuildContext context) {
     showGeneralDialog(
@@ -138,17 +145,8 @@ class PantallaPrincipal extends StatelessWidget {
     );
   }
 
-  // Función para lanzar las URLs externas
-  Future<void> _launchURL(String url) async {
-    final Uri uri = Uri.parse(url);
-    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      throw Exception('No se pudo abrir $url');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    // Colores de identidad
     const Color moradoFondo = Color(0xFF7B2CBF);
     const Color moradoTexto = Color(0xFF6A1B9A);
     const Color naranjaBoton = Color(0xFFFF7043);
@@ -157,10 +155,10 @@ class PantallaPrincipal extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // MARCA DE AGUA DE FONDO
+          // 1. MARCA DE AGUA DE FONDO
           Positioned.fill(
             child: Image.asset(
-              'assets/main/fondo_marca.png',
+              'assets/main/fondo_marca.png', // Tu Imagen3.png
               fit: BoxFit.contain,
             ),
           ),
@@ -168,7 +166,7 @@ class PantallaPrincipal extends StatelessWidget {
           // 2. CONTENIDO PRINCIPAL
           Column(
             children: [
-              // Encabezado Morado con Logo
+              // Encabezado
               Container(
                 width: double.infinity,
                 height: 140,
@@ -180,110 +178,61 @@ class PantallaPrincipal extends StatelessWidget {
                 ),
               ),
 
-              // Cuerpo con Scroll
+              // Cuerpo
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: Column(
                     children: [
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 50),
 
-                      // Bienvenida
-                      Text(
-                        "Bienvenido(a),",
-                        style: TextStyle(color: moradoTexto, fontSize: 18),
-                      ),
-                      const Text(
-                        "Jesus Alberto Valenzuela Alcudia",
+                      // Título
+                      RichText(
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: moradoTexto,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        "Nro. de contrato:\n22913-1",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: moradoTexto,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-
-                      const SizedBox(height: 40),
-                      const Text(
-                        "Estatus del servicio:",
-                        style: TextStyle(color: moradoTexto, fontSize: 18),
-                      ),
-                      const SizedBox(height: 10),
-
-                      // Botón/Indicador ACTIVO
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        decoration: BoxDecoration(
-                          color: naranjaBoton,
-                          borderRadius: BorderRadius.circular(25),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
+                        text: const TextSpan(
+                          style: TextStyle(color: moradoTexto, fontSize: 28),
+                          children: [
+                            TextSpan(text: "¿Contactar al\nárea de "),
+                            TextSpan(
+                              text: "cobranza?",
+                              style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ],
-                        ),
-                        child: Center(
-                          child: Text(
-                            "ACTIVO",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 48,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
                         ),
                       ),
 
                       const SizedBox(height: 30),
+
+                      // Descripción
                       const Text(
-                        "Servicio contratado:\nNormal 200mbps",
+                        "¿Porqué contactar al área de cobranza?\nSi tienes dudas sobre:\n- Cambio de plan.\n- Preguntas acerca de tu pago.\n- Solicitar tu estado de cuenta.\n- Reportes de pago.",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: moradoTexto,
                           fontSize: 18,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
 
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 50),
 
-                      // Botones de Acción
-                      _buildActionButton(
-                        label: "Datos de mi próximo pago",
-                        onPressed: () {},
-                        color: moradoTexto,
-                      ),
-                      const SizedBox(height: 15),
-                      _buildActionButton(
-                        label: "Cambio de plan",
-                        onPressed: () {
-                          // Navegación a la pantalla de cobranza
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const PantallaCobranza(),
-                            ),
-                          );
-                        },
-                        color: moradoTexto,
+                      // Botón Llamada
+                      _buildContactButton(
+                        label: "Contactar\npor llamada",
+                        icon: Icons.phone_in_talk,
+                        color: naranjaBoton,
+                        onTap: () => _launchURL("tel:9935240400"),
                       ),
 
-                      const SizedBox(
-                        height: 100,
-                      ), // Espacio para no chocar con la mascota
+                      const SizedBox(height: 25),
+
+                      // Botón WhatsApp
+                      _buildContactButton(
+                        label: "Contactar\nvía WhatsApp",
+                        icon: Icons.chat_bubble_outline,
+                        color: naranjaBoton,
+                        onTap: () => _launchURL("https://wa.me/9933833889"),
+                      ),
                     ],
                   ),
                 ),
@@ -291,7 +240,7 @@ class PantallaPrincipal extends StatelessWidget {
             ],
           ),
 
-          // 3. MASCOTA FLOTANTE (Esquina inferior derecha)
+          // 3. MASCOTA FIJA (Opcional, si quieres que aparezca también aquí)
           Positioned(
             bottom: 20,
             right: 20,
@@ -330,27 +279,46 @@ class PantallaPrincipal extends StatelessWidget {
     );
   }
 
-  // Widget auxiliar para los botones morados
-  Widget _buildActionButton({
+  // Widget personalizado para los botones grandes de contacto
+  Widget _buildContactButton({
     required String label,
-    required VoidCallback onPressed,
+    required IconData icon,
     required Color color,
+    required VoidCallback onTap,
   }) {
-    return SizedBox(
-      width: double.infinity,
-      height: 55,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: color,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
         ),
-        child: Text(
-          label,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: Colors.white, size: 50),
+            const SizedBox(width: 15),
+            Expanded(
+              child: Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  height: 1.1,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
